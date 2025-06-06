@@ -1,3 +1,8 @@
+import TabButton from "./TabButton";
+import { useState, Fragment } from 'react';
+import { CORE_CONCEPTS, EXAMPLES } from "./data.js";
+
+
 function Header() {
   return (
     <header>
@@ -11,53 +16,71 @@ function Header() {
   );
 }
 
-const randomSentences = [
-  "React is a JavaScript library for building user interfaces.",
-  "Components are the building blocks of React applications.",
-  "State and props are essential concepts in React.",
-  "React uses a virtual DOM to optimize rendering performance.",
-  "Hooks allow you to use state and other React features without writing a class.",
-];
-
-const randSent = randomSentences[Math.floor(Math.random() * randomSentences.length)];
-
-function CoreConcepts(props) {
+function CoreConcept({title, description, image}) {
   return (
     <li>
-      <img src={props.image} alt={props.title} />
-      <h3>{props.title}</h3>
-      <p>{props.description}</p>
+      <img src={image} alt={title} />
+      <h3>{title}</h3>
+      <p>{description}</p>
     </li>
   );
 }
 
-
-
-
 function App() {
+  const [ tabContent, updateTabContent ] = useState('');
+
+  function handleSelection(button){
+    updateTabContent(button);
+    console.log("Updated to ", button);
+  }
+
   return (
-    <div>
+    <>
       <Header />
       {/* <p>Dynamic sentence: {randSent}</p> */}
       <main>
         <section id="core-concepts">
           <h2>Time to get started!</h2>
           <ul>
-            <CoreConcepts
-              image="src/assets/components.png"
-              title="Components"
-              description="The building blocks of React applications."
+            {CORE_CONCEPTS.map( (concept) => (
+              <CoreConcept 
+                key={concept.title} 
+                {...concept}
               />
-            <CoreConcepts />
-            <CoreConcepts />
-            <CoreConcepts />
-
-
+            ))}
           </ul>
         </section>
-        
+
+        {/* Examples Section */}
+            
+        <section id="examples">
+            <h2>Examples</h2>
+            <menu>
+              <TabButton onSelect={() => handleSelection('components')}>Components</TabButton>
+              <TabButton onSelect={() => handleSelection('jsx')}>JSX</TabButton>
+              <TabButton onSelect={() => handleSelection('props')}>Props</TabButton>
+              <TabButton onSelect={() => handleSelection('state')}>State</TabButton>
+            </menu>
+            
+              {tabContent && (
+                <div id="tab-content">
+                  <h3>{EXAMPLES[tabContent].title}</h3>
+                    <p>{EXAMPLES[tabContent].description}</p>
+                    <pre>
+                      <code>
+                        {EXAMPLES[tabContent].code}                  
+                      </code>
+                    </pre>
+                 </div>
+              )}
+              {!tabContent && (
+                <div id="tab-content">
+                    <p>Please choose a topic.</p>
+                </div>
+              )}
+        </section>
       </main>
-    </div>
+    </>
   );
 }
 
