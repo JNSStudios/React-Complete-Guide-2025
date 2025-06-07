@@ -2,12 +2,34 @@ import { useState } from 'react';
 
 import Player from './components/Player';
 import GameBoard from './components/GameBoard';
+import Log from './components/Log';
+
+function getActivePlayer(gameTurns) {
+  var currentPlayer = 'X';
+  if(gameTurns.length > 0 && gameTurns[0].player === 'X') {
+    currentPlayer = 'O';
+  }
+  return currentPlayer;
+}
+
 
 function App() {
-  const [ activePlayer, setActivePlayer ] = useState('X');
+  const [ gameTurns, setGameTurns ] = useState([]);
 
-  function switchPlayer() {
-    setActivePlayer((currentPlayer) => (currentPlayer === 'X' ? 'O' : 'X'));
+  var activePlayer = getActivePlayer(gameTurns);
+  
+  function handleCellSelect(rowInd, colInd) {
+    setGameTurns(prevTurns => {
+      let currentPlayer = getActivePlayer(prevTurns);
+      const updatedTurns = [{
+        square: {
+          row: rowInd,
+          col: colInd
+        },
+        player: currentPlayer
+      }, ...prevTurns];
+      return updatedTurns;
+    })
   }
 
   return (
@@ -22,11 +44,11 @@ function App() {
           </ol>
 
         {/* GAME BOARD */}
-        <GameBoard onSelectCell={switchPlayer} activePlayerSymbol={activePlayer}/>
+        <GameBoard onSelectCell={handleCellSelect} turns={gameTurns}/>
 
       </div>
 
-      LOG
+      <Log turns={gameTurns}/>
     </main>
   )
 }
