@@ -1,6 +1,18 @@
+// Component Imports
+import Header from './comps/Header.jsx';
+import InputBox from './comps/InputBox.jsx';
+
 function App() {
   return (
-    <h1>React Investment Calculator</h1>
+    <>
+
+      <Header />
+
+      <InputBox />
+
+      {/* conversion table */}
+    </>
+    
   )
 }
 
